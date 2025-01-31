@@ -2,7 +2,7 @@ const twilio = require("twilio");
 const { getClient, initRedis } = require('../config/redisConfig');
 
 exports.generateOtp = async (req, res) => {
-    const twilioClient = twilio("AC7c78252cc2ba618ffb44d576cc9d501f", "76d0601b7236b7b56faa1579a81c1532");
+    // const twilioClient = twilio(process.env.TWILLIO_ACCOUNT_SID, process.env.TWILLIO_AUTH_TOKEN);
     const { phone } = req.body;
 
     if (!phone) return res.status(400).json({ error: "Phone number is required" });
@@ -22,7 +22,7 @@ exports.generateOtp = async (req, res) => {
 
         // await twilioClient.messages.create({
         //     body: `Your OTP is ${otp}. It is valid for 5 minutes.`,
-        //     from: "+12314686748",
+        //     from: process.env.TWILIO_PHONE_NUMBER,
         //     to: phone,
         // });
         console.log(otp);
