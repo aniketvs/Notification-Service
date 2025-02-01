@@ -5,6 +5,7 @@ const cors = require("cors");
 require("dotenv").config();
 const sequelize = require("./config/config");
 const { initRedis } = require('./config/redisConfig');
+const startConsumers = require("./utils/startConsumer");
 app.use(cors());
 app.use(express.json());
 app.use("/api/notification", routes);
@@ -28,8 +29,10 @@ const startServer = async () => {
     await sequelize.sync({ alter: true }); // Will check and modify table if needed
     console.log('Database synced successfully.');
     await initRedis();
+
+    await startConsumers();
     app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
+      console.log(`🚀 Server is running on port ${port}`);
     });
   } catch (err) {
     console.error('Unable to connect to the database:', err);
