@@ -19,10 +19,10 @@ app.get("/health", (req, res) => {
   }
 });
 
-
+let port = process.env.PORT || 3000;
 const startServer = async () => {
   try {
-    const port = process.env.PORT || 3000;
+  
     await sequelize.authenticate();
     console.log('Database connection has been established successfully.');
 
@@ -31,8 +31,17 @@ const startServer = async () => {
     await initRedis();
 
     await startConsumers();
-    app.listen(port, () => {
-      console.log(`🚀 Server is running on port ${port}`);
+  const server = app.listen(port, () => {
+  console.log(`🚀 Server is running on port ${port}`);
+});
+    server.on('error', async (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.error(`⚠️ Port ${port} is in use. Trying next port...`);
+        port++;
+        startServer(); // Recursively start with the next port
+      } else {
+        console.error('❌ Server error:', err);
+      }
     });
   } catch (err) {
     console.error('Unable to connect to the database:', err);
