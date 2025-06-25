@@ -5,7 +5,7 @@ require('dotenv').config(); // Ensure dotenv is loaded
 const sequelize = new Sequelize(
   process.env.DATABASE,
   process.env.USERNAME,
-    '',
+ process.env.PASSWORD ?? '',
   {
     host: process.env.HOST,
     port: process.env.PORT_DB,

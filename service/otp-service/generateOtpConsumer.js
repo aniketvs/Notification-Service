@@ -6,11 +6,12 @@ const runGenerateOtpConsumer = async () => {
   console.log("Starting OTP Consumer...");
 
   const consumer = kafka.consumer({ groupId: 'notification-group' });
+
   try {
     await consumer.connect();
 
     // Subscribe to the topic
-    await consumer.subscribe({ topic: 'generate_otp', fromBeginning: true });
+    await consumer.subscribe({ topic: 'generate_otp', fromBeginning: false });
 
     await consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
@@ -24,9 +25,10 @@ const runGenerateOtpConsumer = async () => {
             {
               topic,
               partition,
-              offset: message.offset,
+              offset: (parseInt(message.offset) + 1).toString(),
             },
           ]);
+
 
           console.log(`✅ OTP successfully processed for ${userData.number}`);
         } catch (err) {
